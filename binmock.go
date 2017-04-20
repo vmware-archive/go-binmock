@@ -35,7 +35,7 @@ func NewBinMock(name string) *Mock {
 	server := CurrentServer()
 
 	identifier := strconv.FormatInt(time.Now().UnixNano(), 10)
-	binaryPath, err := gexec.Build("github.com/pivotal-cf/cf-backup-and-restore/binmock/client", "-ldflags", "-X main.serverUrl=0.0.0.0:5555 -X main.identifier="+identifier)
+	binaryPath, err := gexec.Build("github.com/pivotal-cf-experimental/go-binmock/client", "-ldflags", "-X main.serverUrl=0.0.0.0:5555 -X main.identifier="+identifier)
 	Expect(err).ToNot(HaveOccurred())
 
 	mock := &Mock{identifier: identifier, Path: binaryPath}
