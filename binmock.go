@@ -2,15 +2,13 @@ package binmock
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"strconv"
 	"time"
 
 	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega/gexec"
-
-	"io/ioutil"
-
-	"os"
 
 	. "github.com/onsi/gomega"
 )
@@ -36,20 +34,27 @@ func (mock *Mock) invoke(args []string) (int, string, string) {
 	return currentMapping.exitCode, currentMapping.stdout, currentMapping.stderr
 }
 
-func getSourceFile() string {
+func getSourceFile(sourcePath string) string {
 	data, err := Asset("client/main.go")
 	Expect(err).NotTo(HaveOccurred())
-	file, err := ioutil.TempFile("", "binmock_client")
-	file.Write(data)
+
+	pathInProject := path.Join(sourcePath, "bin_mock_client.go")
+
+	file, err := os.Create(pathInProject)
+	Expect(err).NotTo(HaveOccurred())
+
+	_, err = file.Write(data)
+	Expect(err).NotTo(HaveOccurred())
 	Expect(file.Close()).To(Succeed())
-	os.Rename(file.Name(), file.Name()+".go")
-	return file.Name() + ".go"
+
+	return pathInProject
 }
-func NewBinMock(name string) *Mock {
+
+func NewBinMock(name, path string) *Mock {
 	server := CurrentServer()
 
 	identifier := strconv.FormatInt(time.Now().UnixNano(), 10)
-	clientPath := getSourceFile()
+	clientPath := getSourceFile(path)
 	binaryPath, err := gexec.Build(clientPath, "-ldflags", "-X main.serverUrl=0.0.0.0:5555 -X main.identifier="+identifier)
 	Expect(err).ToNot(HaveOccurred())
 	Expect(os.Remove(clientPath)).To(Succeed())

@@ -83,7 +83,7 @@ func clientMainGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "client/main.go", size: 862, mode: os.FileMode(420), modTime: time.Unix(1492703546, 0)}
+	info := bindataFileInfo{name: "client/main.go", size: 862, mode: os.FileMode(420), modTime: time.Unix(1492766406, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
