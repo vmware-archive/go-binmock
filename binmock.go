@@ -8,9 +8,14 @@ import (
 	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega/gexec"
 
+	"io/ioutil"
+
+	"os"
+
 	. "github.com/onsi/gomega"
 )
 
+//go:generate go-bindata -pkg binmock -o packaged_client.go client/
 type Mock struct {
 	Path                string
 	identifier          string
@@ -31,12 +36,23 @@ func (mock *Mock) invoke(args []string) (int, string, string) {
 	return currentMapping.exitCode, currentMapping.stdout, currentMapping.stderr
 }
 
+func getSourceFile() string {
+	data, err := Asset("client/main.go")
+	Expect(err).NotTo(HaveOccurred())
+	file, err := ioutil.TempFile("", "binmock_client")
+	file.Write(data)
+	Expect(file.Close()).To(Succeed())
+	os.Rename(file.Name(), file.Name()+".go")
+	return file.Name() + ".go"
+}
 func NewBinMock(name string) *Mock {
 	server := CurrentServer()
 
 	identifier := strconv.FormatInt(time.Now().UnixNano(), 10)
-	binaryPath, err := gexec.Build("github.com/pivotal-cf-experimental/go-binmock/client", "-ldflags", "-X main.serverUrl=0.0.0.0:5555 -X main.identifier="+identifier)
+	clientPath := getSourceFile()
+	binaryPath, err := gexec.Build(clientPath, "-ldflags", "-X main.serverUrl=0.0.0.0:5555 -X main.identifier="+identifier)
 	Expect(err).ToNot(HaveOccurred())
+	Expect(os.Remove(clientPath)).To(Succeed())
 
 	mock := &Mock{identifier: identifier, Path: binaryPath}
 
