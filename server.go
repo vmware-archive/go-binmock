@@ -30,6 +30,7 @@ func (server *Server) Start() {
 type InvocationRequest struct {
 	Id   string
 	Args []string
+	Env  []string
 }
 
 type InvocationResponse struct {
@@ -53,7 +54,7 @@ func (server *Server) Serve(resp http.ResponseWriter, req *http.Request) {
 	Expect(decodingError).NotTo(HaveOccurred())
 
 	currentMock := server.mocks[jsonInvocationRequest.Id]
-	jsonInvocationResponse := NewInvocationResponse(currentMock.invoke(jsonInvocationRequest.Args))
+	jsonInvocationResponse := NewInvocationResponse(currentMock.invoke(jsonInvocationRequest.Args, jsonInvocationRequest.Env))
 	json.NewEncoder(resp).Encode(jsonInvocationResponse)
 }
 
