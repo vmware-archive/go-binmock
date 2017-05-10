@@ -1,6 +1,6 @@
 # go-binmock
 
-A library to mock interactions with collaborating executables. It works by creating a fake executable that can be orcastracted by the test. The path of the test executable can be injected into the system under test.
+A library to mock interactions with collaborating executables. It works by creating a fake executable that can be orchestrated by the test. The path of the test executable can be injected into the system under test.
 
 
 ### Usage
