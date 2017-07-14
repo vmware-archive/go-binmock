@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"bufio"
 	"bytes"
 	"os"
 )
@@ -17,6 +18,11 @@ func main() {
 	jsonInvocationRequest.Id = identifier
 	jsonInvocationRequest.Args = os.Args[1:]
 	jsonInvocationRequest.Env = os.Environ()
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		jsonInvocationRequest.Stdin = append(jsonInvocationRequest.Stdin, scanner.Text())
+	}
 
 	buffer := bytes.NewBufferString("")
 	if err := json.NewEncoder(buffer).Encode(jsonInvocationRequest); err != nil {
@@ -39,9 +45,10 @@ func main() {
 }
 
 type InvocationRequest struct {
-	Id   string
-	Args []string
-	Env  []string
+	Id    string
+	Args  []string
+	Env   []string
+	Stdin []string
 }
 
 type InvocationResponse struct {

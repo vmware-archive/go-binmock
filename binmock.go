@@ -26,7 +26,7 @@ type Mock struct {
 	invocations []Invocation
 }
 
-func (mock *Mock) invoke(args, env []string) (int, string, string) {
+func (mock *Mock) invoke(args, env, stdin []string) (int, string, string) {
 	if mock.currentMappingIndex >= len(mock.mappings) {
 		ginkgo.Fail(fmt.Sprintf("Too many calls to the mock! Last call with %v", args))
 	}
@@ -35,7 +35,7 @@ func (mock *Mock) invoke(args, env []string) (int, string, string) {
 	if currentMapping.expectedArgs != nil {
 		Expect(currentMapping.expectedArgs).To(Equal(args))
 	}
-	mock.invocations = append(mock.invocations, NewInvocation(args, env))
+	mock.invocations = append(mock.invocations, NewInvocation(args, env, stdin))
 	return currentMapping.exitCode, currentMapping.stdout, currentMapping.stderr
 }
 
@@ -110,14 +110,16 @@ func (mapping *MockMapping) WillExitWith(exitCode int) *MockMapping {
 }
 
 type Invocation struct {
-	args []string
-	env  map[string]string
+	args  []string
+	env   map[string]string
+	stdin []string
 }
 
-func NewInvocation(args, env []string) Invocation {
+func NewInvocation(args, env, stdin []string) Invocation {
 	return Invocation{
-		args: args,
-		env:  parseEnv(env),
+		args:  args,
+		env:   parseEnv(env),
+		stdin: stdin,
 	}
 }
 
@@ -138,6 +140,10 @@ func (invocation Invocation) Args() []string {
 
 func (invocation Invocation) Env() map[string]string {
 	return invocation.env
+}
+
+func (invocation Invocation) Stdin() []string {
+	return invocation.stdin
 }
 
 func (mock *Mock) Invocations() []Invocation {
