@@ -19,7 +19,7 @@ Setup expected interactions with the binary
 ```golang
 mockMonit.WhenCalledWith("start", "all").WillExitWith(0)
 mockMonit.WhenCalledWith("summary").WillPrintToStdOut(output)
-mockMonit.WhenCalledWith("summary").WillPrintToStdOut(outpout).WillPrintToStdErr("Noooo!").WillExitWith(1)
+mockMonit.WhenCalledWith("summary").WillPrintToStdOut(output).WillPrintToStdErr("Noooo!").WillExitWith(1)
 ```
 
 Assert on the interactions with the binary, after the fact
