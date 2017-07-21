@@ -2,11 +2,14 @@ package binmock
 
 import (
 	"encoding/json"
+	"net"
 	"net/http"
 )
 
 type Server struct {
 	mocks map[string]*Mock
+	*http.Server
+	listener net.Listener
 }
 
 var currentServer *Server
@@ -22,7 +25,9 @@ func CurrentServer() *Server {
 }
 
 func (server *Server) Start() {
-	go http.ListenAndServe("0.0.0.0:5555", http.HandlerFunc(server.Serve))
+	server.Server = &http.Server{Addr: ":0", Handler: http.HandlerFunc(server.Serve)}
+	server.listener, _ = net.Listen("tcp", "127.0.0.1:0")
+	go server.Server.Serve(server.listener)
 }
 
 type InvocationRequest struct {

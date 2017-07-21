@@ -25,7 +25,7 @@ func NewBinMock(name string, failHandler FailHandler) *Mock {
 	server := CurrentServer()
 
 	identifier := strconv.FormatInt(time.Now().UnixNano(), 10)
-	binaryPath, err := buildBinary(identifier)
+	binaryPath, err := buildBinary(identifier, server.listener.Addr().String())
 	if err != nil {
 		failHandler(fmt.Sprintf("cant build binary %v", err))
 	}
@@ -39,11 +39,13 @@ func NewBinMock(name string, failHandler FailHandler) *Mock {
 func (mock *Mock) invoke(args, env, stdin []string) (int, string, string) {
 	if mock.currentMappingIndex >= len(mock.mappings) {
 		mock.failHandler(fmt.Sprintf("Too many calls to the mock! Last call with %v", args))
+		return 1, "", ""
 	}
 	currentMapping := mock.mappings[mock.currentMappingIndex]
 	mock.currentMappingIndex = mock.currentMappingIndex + 1
 	if currentMapping.expectedArgs != nil && !reflect.DeepEqual(currentMapping.expectedArgs, args) {
 		mock.failHandler(fmt.Sprintf("Expected %v to equal %v", args, currentMapping.expectedArgs))
+		return 1, "", ""
 	}
 	mock.invocations = append(mock.invocations, NewInvocation(args, env, stdin))
 	return currentMapping.exitCode, currentMapping.stdout, currentMapping.stderr

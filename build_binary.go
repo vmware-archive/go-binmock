@@ -9,13 +9,13 @@ import (
 	"path/filepath"
 )
 
-func buildBinary(identifier string) (string, error) {
+func buildBinary(identifier, serverUrl string) (string, error) {
 	clientPath, err := getSourceFile()
 	if err != nil {
 		return "", fmt.Errorf("cant extract client source %v", err)
 	}
 
-	binaryPath, err := doBuild(clientPath, "-ldflags", "-X main.serverUrl=0.0.0.0:5555 -X main.identifier="+identifier)
+	binaryPath, err := doBuild(clientPath, "-ldflags", "-X main.serverUrl="+serverUrl+" -X main.identifier="+identifier)
 
 	if err != nil {
 		return "", fmt.Errorf("can't build binary %v", err)
