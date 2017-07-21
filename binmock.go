@@ -15,14 +15,15 @@ type Mock struct {
 	currentMappingIndex int
 	failHandler         FailHandler
 
-	mappings    []*MockMapping
+	mappings    []*InvocationStub
 	invocations []Invocation
 }
 
 type FailHandler func(message string, callerSkip ...int)
 
+// Creates a new binMock
 func NewBinMock(name string, failHandler FailHandler) *Mock {
-	server := CurrentServer()
+	server := getCurrentServer()
 
 	identifier := strconv.FormatInt(time.Now().UnixNano(), 10)
 	binaryPath, err := buildBinary(identifier, server.listener.Addr().String())
@@ -47,25 +48,29 @@ func (mock *Mock) invoke(args, env, stdin []string) (int, string, string) {
 		mock.failHandler(fmt.Sprintf("Expected %v to equal %v", args, currentMapping.expectedArgs))
 		return 1, "", ""
 	}
-	mock.invocations = append(mock.invocations, NewInvocation(args, env, stdin))
+	mock.invocations = append(mock.invocations, newInvocation(args, env, stdin))
 	return currentMapping.exitCode, currentMapping.stdout, currentMapping.stderr
 }
 
-func (mock *Mock) WhenCalled() *MockMapping {
-	return mock.createMapping(&MockMapping{})
+// Sets up a stub for a possible invocation of the mock, accepting any arguments
+func (mock *Mock) WhenCalled() *InvocationStub {
+	return mock.createMapping(&InvocationStub{})
 }
 
-func (mock *Mock) WhenCalledWith(args ...string) *MockMapping {
-	invocation := &MockMapping{}
+// Sets up a stub for a possible invocation of the mock, with specific arguments
+// If args don't match the actual arguments to the mock then it fails
+func (mock *Mock) WhenCalledWith(args ...string) *InvocationStub {
+	invocation := &InvocationStub{}
 	invocation.expectedArgs = args
 	return mock.createMapping(invocation)
 }
 
-func (mock *Mock) createMapping(mapping *MockMapping) *MockMapping {
+func (mock *Mock) createMapping(mapping *InvocationStub) *InvocationStub {
 	mock.mappings = append(mock.mappings, mapping)
 	return mapping
 }
 
+// Invocations returns the list of invocations of the mock till now
 func (mock *Mock) Invocations() []Invocation {
 	return mock.invocations
 }

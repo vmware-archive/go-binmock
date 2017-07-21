@@ -6,17 +6,17 @@ import (
 	"net/http"
 )
 
-type Server struct {
+type server struct {
 	mocks map[string]*Mock
 	*http.Server
 	listener net.Listener
 }
 
-var currentServer *Server
+var currentServer *server
 
-func CurrentServer() *Server {
+func getCurrentServer() *server {
 	if currentServer == nil {
-		currentServer = &Server{
+		currentServer = &server{
 			mocks: map[string]*Mock{},
 		}
 		currentServer.Start()
@@ -24,41 +24,41 @@ func CurrentServer() *Server {
 	return currentServer
 }
 
-func (server *Server) Start() {
+func (server *server) Start() {
 	server.Server = &http.Server{Addr: ":0", Handler: http.HandlerFunc(server.Serve)}
 	server.listener, _ = net.Listen("tcp", "127.0.0.1:0")
 	go server.Server.Serve(server.listener)
 }
 
-type InvocationRequest struct {
+type invocationRequest struct {
 	Id    string
 	Args  []string
 	Env   []string
 	Stdin []string
 }
 
-type InvocationResponse struct {
+type invocationResponse struct {
 	Stdout   string
 	Stderr   string
 	ExitCode int
 }
 
-func NewInvocationResponse(exitCode int, stdout, stderr string) InvocationResponse {
-	return InvocationResponse{
+func newInvocationResponse(exitCode int, stdout, stderr string) invocationResponse {
+	return invocationResponse{
 		ExitCode: exitCode,
 		Stdout:   stdout,
 		Stderr:   stderr,
 	}
 }
 
-func (server *Server) Serve(resp http.ResponseWriter, req *http.Request) {
-	invocationRequest := InvocationRequest{}
+func (server *server) Serve(resp http.ResponseWriter, req *http.Request) {
+	invocationRequest := invocationRequest{}
 	json.NewDecoder(req.Body).Decode(&invocationRequest)
 	currentMock := server.mocks[invocationRequest.Id]
-	invocationResponse := NewInvocationResponse(currentMock.invoke(invocationRequest.Args, invocationRequest.Env, invocationRequest.Stdin))
+	invocationResponse := newInvocationResponse(currentMock.invoke(invocationRequest.Args, invocationRequest.Env, invocationRequest.Stdin))
 	json.NewEncoder(resp).Encode(invocationResponse)
 }
 
-func (server *Server) Monitor(mock *Mock) {
+func (server *server) Monitor(mock *Mock) {
 	server.mocks[mock.identifier] = mock
 }
