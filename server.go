@@ -3,9 +3,6 @@ package binmock
 import (
 	"encoding/json"
 	"net/http"
-
-	"github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
 type Server struct {
@@ -23,6 +20,7 @@ func CurrentServer() *Server {
 	}
 	return currentServer
 }
+
 func (server *Server) Start() {
 	go http.ListenAndServe("0.0.0.0:5555", http.HandlerFunc(server.Serve))
 }
@@ -49,14 +47,11 @@ func NewInvocationResponse(exitCode int, stdout, stderr string) InvocationRespon
 }
 
 func (server *Server) Serve(resp http.ResponseWriter, req *http.Request) {
-	defer ginkgo.GinkgoRecover()
-	jsonInvocationRequest := InvocationRequest{}
-	decodingError := json.NewDecoder(req.Body).Decode(&jsonInvocationRequest)
-	Expect(decodingError).NotTo(HaveOccurred())
-
-	currentMock := server.mocks[jsonInvocationRequest.Id]
-	jsonInvocationResponse := NewInvocationResponse(currentMock.invoke(jsonInvocationRequest.Args, jsonInvocationRequest.Env, jsonInvocationRequest.Stdin))
-	json.NewEncoder(resp).Encode(jsonInvocationResponse)
+	invocationRequest := InvocationRequest{}
+	json.NewDecoder(req.Body).Decode(&invocationRequest)
+	currentMock := server.mocks[invocationRequest.Id]
+	invocationResponse := NewInvocationResponse(currentMock.invoke(invocationRequest.Args, invocationRequest.Env, invocationRequest.Stdin))
+	json.NewEncoder(resp).Encode(invocationResponse)
 }
 
 func (server *Server) Monitor(mock *Mock) {
