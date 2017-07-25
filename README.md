@@ -27,5 +27,5 @@ Assert on the interactions with the binary, after the fact
 ```golang
 Expect(mockPGDump.Invocations()).To(HaveLen(1))
 Expect(mockPGDump.Invocations()[0].Args()).To(Equal([]string{"dbname"}))
-Expect(mockPGDump.Invocations()[0].Env()).To(HaveKeyWithValue("PGPASS", "we are going to build a wall"))
+Expect(mockPGDump.Invocations()[0].Env()).To(HaveKeyWithValue("PGPASS", "p@ssw0rd"))
 ```
