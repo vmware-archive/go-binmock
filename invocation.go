@@ -27,7 +27,7 @@ func (invocation Invocation) Env() map[string]string {
 	return invocation.env
 }
 
-// Stdin represents the standard input steam received by the mock
+// Stdin represents the standard input steam received by the mock as a slice of lines
 func (invocation Invocation) Stdin() []string {
 	return invocation.stdin
 }

@@ -1,5 +1,6 @@
 package binmock
 
+// InvocationStub offers a fluid API to set up the behaviour on invocation of the binary mock
 type InvocationStub struct {
 	expectedArgs []string
 

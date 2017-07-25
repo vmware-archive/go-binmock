@@ -19,9 +19,10 @@ type Mock struct {
 	invocations []Invocation
 }
 
+// The type of the function that will be invoked when an assertion fails. Compatible with the ginkgo fail handler (`ginkgo.Fail`)
 type FailHandler func(message string, callerSkip ...int)
 
-// Creates a new binMock
+// Creates a new binary mock
 func NewBinMock(failHandler FailHandler) *Mock {
 	server := getCurrentServer()
 
