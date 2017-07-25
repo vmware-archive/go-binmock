@@ -8,7 +8,7 @@ A library to mock interactions with collaborating executables. It works by creat
 Create a mock binary and getting its path.
 
 ```golang
-mockMonit = binmock.NewBinMock("monit")
+mockMonit = binmock.NewBinMock(ginkgo.Fail)
 monitPath := mockMonit.Path
 
 thingToTest := NewThingToTest(monitPath)
