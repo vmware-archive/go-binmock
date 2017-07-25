@@ -33,7 +33,7 @@ func NewBinMock(name string, failHandler FailHandler) *Mock {
 
 	mock := &Mock{identifier: identifier, Path: binaryPath, failHandler: failHandler}
 
-	server.Monitor(mock)
+	server.monitor(mock)
 	return mock
 }
 

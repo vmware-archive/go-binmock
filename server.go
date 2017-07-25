@@ -19,13 +19,13 @@ func getCurrentServer() *server {
 		currentServer = &server{
 			mocks: map[string]*Mock{},
 		}
-		currentServer.Start()
+		currentServer.start()
 	}
 	return currentServer
 }
 
-func (server *server) Start() {
-	server.Server = &http.Server{Addr: ":0", Handler: http.HandlerFunc(server.Serve)}
+func (server *server) start() {
+	server.Server = &http.Server{Addr: ":0", Handler: http.HandlerFunc(server.serve)}
 	server.listener, _ = net.Listen("tcp", "127.0.0.1:0")
 	go server.Server.Serve(server.listener)
 }
@@ -51,7 +51,7 @@ func newInvocationResponse(exitCode int, stdout, stderr string) invocationRespon
 	}
 }
 
-func (server *server) Serve(resp http.ResponseWriter, req *http.Request) {
+func (server *server) serve(resp http.ResponseWriter, req *http.Request) {
 	invocationRequest := invocationRequest{}
 	json.NewDecoder(req.Body).Decode(&invocationRequest)
 	currentMock := server.mocks[invocationRequest.Id]
@@ -59,6 +59,6 @@ func (server *server) Serve(resp http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(resp).Encode(invocationResponse)
 }
 
-func (server *server) Monitor(mock *Mock) {
+func (server *server) monitor(mock *Mock) {
 	server.mocks[mock.identifier] = mock
 }
