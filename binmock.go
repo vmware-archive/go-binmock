@@ -22,7 +22,7 @@ type Mock struct {
 type FailHandler func(message string, callerSkip ...int)
 
 // Creates a new binMock
-func NewBinMock(name string, failHandler FailHandler) *Mock {
+func NewBinMock(failHandler FailHandler) *Mock {
 	server := getCurrentServer()
 
 	identifier := strconv.FormatInt(time.Now().UnixNano(), 10)

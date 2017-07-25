@@ -19,7 +19,7 @@ var _ = Describe("go-binmock", func() {
 
 	BeforeEach(func() {
 		currentMockFailure = &mockFailure{}
-		binMock = binmock.NewBinMock("binmock", currentMockFailure.Fail)
+		binMock = binmock.NewBinMock(currentMockFailure.Fail)
 	})
 
 	Describe("when no stubs are defined", func() {
@@ -184,8 +184,8 @@ var _ = Describe("go-binmock", func() {
 
 	Describe("when multiple mock binaries are created", func() {
 		It("returns the response from the correct mock", func() {
-			firstMock := binmock.NewBinMock("first", currentMockFailure.Fail)
-			secondMock := binmock.NewBinMock("second", currentMockFailure.Fail)
+			firstMock := binmock.NewBinMock(currentMockFailure.Fail)
+			secondMock := binmock.NewBinMock(currentMockFailure.Fail)
 
 			firstMock.WhenCalled().WillPrintToStdOut("first")
 			firstMock.WhenCalled().WillPrintToStdOut("first again")
