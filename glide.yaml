@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package: github.com/pivotal-cf-experimental/go-binmock
+package: github.com/pivotal-cf/go-binmock
 import:
 - package: github.com/onsi/ginkgo
   version: ~1.3.1
@@ -22,6 +22,3 @@ import:
   version: ~1.1.0
   subpackages:
   - gexec
-- package: github.com/pivotal-cf/cf-backup-and-restore
-  subpackages:
-  - binmock

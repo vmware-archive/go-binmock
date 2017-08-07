@@ -1,5 +1,5 @@
-hash: 11e41fa27be91d20fcb17ef2c161f7153754de2d5db21fb166e2e556d9af7a48
-updated: 2017-04-20T15:03:16.172742385+01:00
+hash: 15fddfa91195e3c2c865975103c9ebc9e0eabab59bbada075e2bb7109d17acb2
+updated: 2017-08-07T17:58:08.00029132+01:00
 imports:
 - name: github.com/onsi/ginkgo
   version: 77a8c1e5c40d6bb6c5eb4dd4bdce9763564f6298
@@ -37,14 +37,10 @@ imports:
   - matchers/support/goraph/node
   - matchers/support/goraph/util
   - types
-- name: github.com/pivotal-cf/cf-backup-and-restore
-  version: e9f9dc619ba1f774c105142a891a79397d837b9c
-  subpackages:
-  - binmock
+testImports:
 - name: golang.org/x/sys
-  version: f3918c30c5c2cb527c0b071a27c35120a6c0719a
+  version: d8f5ea21b9295e315e612b4bcf4bedea93454d4d
   subpackages:
   - unix
 - name: gopkg.in/yaml.v2
-  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
-testImports: []
+  version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f

@@ -26,7 +26,7 @@ import (
 	"bytes"
 
 	"github.com/onsi/gomega/gbytes"
-	"github.com/pivotal-cf-experimental/go-binmock"
+	"github.com/pivotal-cf/go-binmock"
 )
 
 var _ = Describe("go-binmock", func() {
