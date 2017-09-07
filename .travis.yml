@@ -3,6 +3,8 @@ go:
   - 1.8
 install:
   - go get -v ./...
-  - go get github.com/onsi/ginkgo
+  - go get github.com/onsi/gomega
+  - go get github.com/onsi/gomega/gexec
   - go install github.com/onsi/ginkgo/ginkgo
+  
 script: $HOME/gopath/bin/ginkgo -r --randomizeAllSpecs --failOnPending --randomizeSuites --race
