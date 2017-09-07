@@ -29,3 +29,6 @@ Expect(mockPGDump.Invocations()).To(HaveLen(1))
 Expect(mockPGDump.Invocations()[0].Args()).To(Equal([]string{"dbname"}))
 Expect(mockPGDump.Invocations()[0].Env()).To(HaveKeyWithValue("PGPASS", "p@ssw0rd"))
 ```
+
+
+For a working example you can look at [backup-and-restore-sdk](https://github.com/cloudfoundry-incubator/backup-and-restore-sdk-release/blob/19fa00e61dcdbf15bfe57633798c8f88a8345e9d/src/github.com/cloudfoundry-incubator/database-backup-and-restore/integration_tests/mysql_test.go)
