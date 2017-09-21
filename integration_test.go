@@ -214,6 +214,30 @@ var _ = Describe("go-binmock", func() {
 			Expect(RunCommand(secondMock.Path).Out).To(gbytes.Say("second again"))
 		})
 	})
+
+	Describe("when reset", func() {
+		It("ignores earlier expectations", func() {
+			binMock.WhenCalled().WillExitWith(0)
+			binMock.Reset()
+			binMock.WhenCalled().WillExitWith(42)
+
+			session := RunCommand(binMock.Path)
+
+			Expect(session).To(gexec.Exit(42))
+		})
+	})
+
+	It("ignores earlier invocations", func() {
+		binMock.WhenCalled().WillExitWith(0)
+		binMock.Reset()
+		binMock.WhenCalled().WillExitWith(42)
+
+		RunCommand(binMock.Path, "foo")
+
+		Expect(binMock.Invocations()).To(HaveLen(1))
+		Expect(binMock.Invocations()[0].Args()).To(ConsistOf("foo"))
+
+	})
 })
 
 type mockFailure struct {

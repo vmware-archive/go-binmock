@@ -91,3 +91,10 @@ func (mock *Mock) createMapping(mapping *InvocationStub) *InvocationStub {
 func (mock *Mock) Invocations() []Invocation {
 	return mock.invocations
 }
+
+// Resets the mapping and invocations to the mock
+func (mock *Mock) Reset() {
+	mock.mappings = []*InvocationStub{}
+	mock.invocations = []Invocation{}
+	mock.currentMappingIndex = 0
+}
